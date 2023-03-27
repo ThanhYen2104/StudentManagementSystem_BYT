@@ -11,6 +11,73 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-<h1 class="title">Chào mừng đến với website quản lý học sinh!</h1>
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #cbe7fb;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#" style="color: #2f7e87; font-weight: bold;">BYT EDU</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Trang chủ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        HỌC SINH
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Hồ sơ học sinh</a></li>
+                        <li><a class="dropdown-item" href="#">Quản lý điểm</a></li>
+                        <li><a class="dropdown-item" href="#">Báo cáo thông tin học sinh</a></li>
+<!--                        <li>-->
+<!--                            <hr class="dropdown-divider">-->
+<!--                        </li>-->
+<!--                        <li><a class="dropdown-item" href="#">Something else here</a></li>-->
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        LỚP HỌC
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Hoa mai</a></li>
+                        <li><a class="dropdown-item" href="#">Hoa lan</a></li>
+                        <li><a class="dropdown-item" href="#">Hoa ly</a></li>
+<!--                        <li>-->
+<!--                            <hr class="dropdown-divider">-->
+<!--                        </li>-->
+<!--                        <li><a class="dropdown-item" href="#">Something else here</a></li>-->
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                </li>
+            </ul>
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Tìm</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<div class="mt-4 p-5 rounded" style="background-color: #cbe7fb; color: #2f7e87;">
+  <h1>Student Education System Website</h1>
+  <p>BYT EDUCATION &copy; 2023</p>
+</div>
+
 </body>
 </html>

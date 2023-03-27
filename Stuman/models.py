@@ -12,6 +12,7 @@ class BaseModel(db.Model):
 
 
 # Tạo bảng mới theo db.Model
+# Bảng thông tin lớp học
 class Grade(BaseModel):
     name_grade = Column(String(20), nullable=False)
     num_grade = Column(Integer, nullable=False)
@@ -22,8 +23,9 @@ class Grade(BaseModel):
         return self.name_grade
 
 
+# Bảng học sinh
 class Student(BaseModel):
-    # __tablename__='Student'
+    # __tablename__ = 'Student'
     stu_name = Column(String(100), nullable=False)
     stu_gender = Column(String(5))
     stu_age = Column(Integer, nullable=False)
@@ -37,6 +39,11 @@ class Student(BaseModel):
     def __str__(self):
         return self.stu_name
 
+
+# Bảng điểm học sinh
+class Mark(BaseModel):
+    mark_name = Column(String(30), nullable=False)
+    mark_num = Column(Integer, nullable=True)
 
 
 if __name__ == '__main__':
