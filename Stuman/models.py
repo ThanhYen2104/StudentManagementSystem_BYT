@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from Stuman import db, app
 from datetime import datetime
@@ -14,10 +14,10 @@ class BaseModel(db.Model):
 # Tạo bảng mới theo db.Model
 # Bảng thông tin lớp học
 class Grade(BaseModel):
-    name_grade = Column(String(20), nullable=False)
-    num_grade = Column(Integer, nullable=False)
-    descript_grade = Column(String(100))
-    students = relationship('Student', backref='Grade', lazy=True)
+    name_grade = Column(String(20), nullable=False) # Tên lớp
+    num_grade = Column(Integer, nullable=False) # Chỉ số lớp
+    descript_grade = Column(String(100))    # Mô tả thông tin lớp
+    students = relationship('Student', backref='Grade', lazy=True)  # Học sinh thuộc lớp
 
     def __str__(self):
         return self.name_grade
@@ -26,24 +26,25 @@ class Grade(BaseModel):
 # Bảng học sinh
 class Student(BaseModel):
     # __tablename__ = 'Student'
-    stu_name = Column(String(100), nullable=False)
-    stu_gender = Column(String(5))
-    stu_age = Column(Integer, nullable=False)
-    stu_birthday = Column(DateTime, nullable=False)
-    stu_address = Column(String(200))
-    stu_contact = Column(Integer)
-    stu_image = Column(String(100))
-    created_date = Column(DateTime, default=datetime.now())
-    grase_id = Column(Integer, ForeignKey(Grade.id), nullable=False)
+    stu_name = Column(String(100), nullable=False)  # Tên HS
+    stu_gender = Column(String(5))  # Giới tính HS
+    stu_age = Column(Integer, nullable=False)  # Tuổi của HS
+    stu_birthday = Column(DateTime, nullable=False)  # Ngày sinh nhật của HS
+    stu_address = Column(String(200))  # Địa chỉ nhà
+    stu_contact_1 = Column(Integer, nullable=False)  # Số đt PH
+    stu_contact_2 = Column(Integer)  # Số đt PH
+    stu_image = Column(String(100))  # Hình ảnh của học sinh
+    created_date = Column(DateTime, default=datetime.now())  # Ngày tạo thông tin học sinh
+    grase_id = Column(Integer, ForeignKey(Grade.id), nullable=False)  # Lớp chưa thông tin hoc sinh này
 
     def __str__(self):
         return self.stu_name
 
 
-# Bảng điểm học sinh
-class Mark(BaseModel):
-    mark_name = Column(String(30), nullable=False)
-    mark_num = Column(Integer, nullable=True)
+# Quản lý môn học
+class Subject(BaseModel):
+    sub_name = Column(String(50), nullable=False)
+    sub_description = Column(Text)
 
 
 if __name__ == '__main__':

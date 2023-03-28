@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    {% if cla %}
+    <div class="row">
+        {% for s in stu %}
+        <div class="col-md-3" style="padding:1rem;">
+            <div class="card">
+                <img class="card-img-top" src="{{ s.stu_image }}" alt="{{ s.stu_name }}">
+                <div class="card-body">
+                    <h4 class="card-title">{{ s.stu_name }}</h4>
+                    <p class="card-text">Giới tính: {{ s.stu_gender }}</p>
+                    <p class="card-text">Tuổi: {{ s.stu_age }}</p>
+                    <p class="card-text">Ngày sinh: {{ s.stu_birthday }}</p>
+                    <p class="card-text">Số điện thoại: {{ s.stu_contact }}</p>
+                    <a href="#" class="btn btn outline-primary">Sửa hồ sơ</a>
+                    <a href="#" class="btn btn-outline-danger">Xem thông tin</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="alert alert-info mt-2">Không có thông tin học sinh!!!</p>
+    {% endif %}
+</div>
+{% endblock %}
