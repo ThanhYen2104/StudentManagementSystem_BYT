@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Float, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from Stuman import db, app
+from StudentManagementSystem_BYT.Stuman import db, app
 from datetime import datetime
 
 
