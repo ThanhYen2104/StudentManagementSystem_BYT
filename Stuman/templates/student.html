@@ -2,4 +2,41 @@
 
 {% block content %}
 <h2>Quản lý học sinh</h2>
+{% if 'student' in session %}
+<table class="table">
+    <tr>
+        <th>Mã học sinh</th>
+        <th>Tên học sinh</th>
+        <th>Giới tính</th>
+        <th>Sinh nhật</th>
+        <th>Địa chỉ</th>
+        <th>Số liên lạc</th>
+        <th>Email</th>
+        <th></th>
+    </tr>
+
+    {% for s in session['student'].values() %}
+    <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.stu_name }}</td>
+        <td>{{ s.stu_gender }}</td>
+        <td>{{ s.stu_birthday }}</td>
+        <td>{{ s.stu_address }}</td>
+        <td>{{ s.stu_contact_1 }}</td>
+        <td>{{ s.stu_email }}</td>
+        <td>
+            <input type="button" value="Sửa" class="btn btn-success"/>
+        </td>
+        <td>
+            <input type="button" value="Xóa" class="btn btn-danger"/>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% else %}
+<div class="alert alert-info">
+    <h4>KHÔNG CÓ THÔNG TIN HỌC SINH NÀO ĐƯỢC THÊM VÀO!!!</h4>
+</div>
+{% endif %}
 {% endblock %}
