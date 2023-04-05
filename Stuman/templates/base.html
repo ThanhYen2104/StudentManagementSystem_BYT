@@ -17,8 +17,7 @@
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #82baf2;">
     <div class="container-fluid">
         <a class="navbar-brand" href="/" style="color: #2f7e87; font-weight: bold;">BYT EDU</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -26,8 +25,6 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/">Trang chủ</a>
                 </li>
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link" href="#"></a>-->
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button"
@@ -37,10 +34,6 @@
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="/students">Hồ sơ học sinh</a></li>
                         <li><a class="dropdown-item" href="/subject">Môn học</a></li>
-                        <!--                        <li>-->
-                        <!--                            <hr class="dropdown-divider">-->
-                        <!--                        </li>-->
-                        <!--                        <li><a class="dropdown-item" href="#">Something else here</a></li>-->
                     </ul>
                 </li>
 
@@ -50,13 +43,9 @@
                         LỚP HỌC
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Hoa mai</a></li>
-                        <li><a class="dropdown-item" href="#">Hoa lan</a></li>
-                        <li><a class="dropdown-item" href="#">Hoa ly</a></li>
-                        <!--                        <li>-->
-                        <!--                            <hr class="dropdown-divider">-->
-                        <!--                        </li>-->
-                        <!--                        <li><a class="dropdown-item" href="#">Something else here</a></li>-->
+                        {% for g in grade %}
+                        <li><a class="dropdown-item" href="#">{{ g.name }}</a></li>
+                        {% endfor %}
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -67,19 +56,12 @@
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="#">Thông tin học sinh</a></li>
                         <li><a class="dropdown-item" href="#">Thông tin lớp học</a></li>
-                        <!--                        <li>-->
-                        <!--                            <hr class="dropdown-divider">-->
-                        <!--                        </li>-->
-                        <!--                        <li><a class="dropdown-item" href="#">Something else here</a></li>-->
                     </ul>
                 </li>
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>-->
-                <!--                </li>-->
             </ul>
 
             <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Nhập tên học sinh" aria-label="Search">
+                <input class="form-control me-2" type="search" name="kw" placeholder="Nhập tên học sinh" aria-label="Search">
                 <button class="btn btn-sm btn-outline-secondary" type="submit" style="color: white; font-weight: bold;">Tìm</button>
             </form>
             <ul class="nav justify-content-end">

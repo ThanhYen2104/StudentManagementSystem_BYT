@@ -14,10 +14,9 @@ class BaseModel(db.Model):
 
 
 # Tạo bảng mới theo db.Model
-class User(db.Model, UserMixin):
-    id = Column(Integer, primary_key=True, autoincrement=True)
+class User(BaseModel, UserMixin):
     name = Column(String(100), nullable=False)
-    avatar = Column(String(100))
+    avatar = Column(String(100), default=None)
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(100), nullable=False)
     user_role = Column(String(20), default='user')
@@ -29,76 +28,104 @@ class User(db.Model, UserMixin):
 # Bảng thông tin khối lớp học
 class Grade(BaseModel):
     __tablename__ = 'grade'
-    grd_name = Column(String(20), nullable=False)  # Tên lớp
-    grd_num = Column(Integer, nullable=False)  # Chỉ số lớp
-    grd_descript = Column(String(100))  # Mô tả thông tin lớp
-    grd_student = relationship('Student', backref='grade', lazy=True)  # Học sinh thuộc lớp
-
-    grd_class = relationship('Class', backref='grade', lazy=True)
+    name = Column(String(20), nullable=False)  # Tên lớp
+    value = Column(Integer, nullable=False)  # Chỉ số lớp
+    description = Column(String(100))  # Mô tả thông tin lớp
+    students = relationship('Student', backref='grade', lazy=False)  # Học sinh thuộc lớp
+    classes = relationship('Class', backref='grade', lazy=False)
 
     def __str__(self):
-        return self.name_grade
+        return self.name
 
 
 # Bảng thông tin lớp học
 class Class(BaseModel):
     __tablename__ = 'class'
-    cls_name = Column(String(250), nullable=False)
+    name = Column(String(250), nullable=False)
+    grade_id = Column(Integer, ForeignKey('grade.id'))
+    student = relationship('Student', backref='class', lazy=True)
 
-    cls_grd_id = Column(Integer, ForeignKey('grade.id'))
-    cls_grade = relationship('Grade', backref='class', lazy=True)
-    cls_student = relationship('Student', backref='class', lazy=True)
     def __str__(self):
-        return self.cls_name
+        return self.name
 
 
 # Bảng học sinh
 class Student(BaseModel):
     __tablename__ = 'student'
-    stu_name = Column(String(100), nullable=False)  # Tên HS
-    stu_gender = Column(String(5))  # Giới tính HS
-    stu_birthday = Column(DateTime, nullable=False)  # Ngày sinh nhật của HS
-    stu_address = Column(String(200))  # Địa chỉ nhà
-    stu_contact_1 = Column(Integer, nullable=False)  # Số đt PH
-    stu_contact_2 = Column(Integer)  # Số đt PH
-    stu_email = Column(String(200))
-    stu_image = Column(String(100))  # Hình ảnh của học sinh
-    stu_created_date = Column(DateTime, default=datetime.now())  # Ngày tạo thông tin học sinh
-    stu_grd_id = Column(Integer, ForeignKey(Grade.id), nullable=False)  # Lớp chưa thông tin hoc sinh này
-
-    stu_cls_id = Column(Integer, ForeignKey('class.id'))
-    stu_class = relationship('Class', backref='Student', lazy=True)
+    name = Column(String(100), nullable=False)  # Tên HS
+    gender = Column(String(5))  # Giới tính HS
+    birthday = Column(DateTime, nullable=False)  # Ngày sinh nhật của HS
+    address = Column(String(200))  # Địa chỉ nhà
+    contact_1 = Column(Integer, nullable=False)  # Số đt PH
+    contact_2 = Column(Integer)  # Số đt PH
+    email = Column(String(200))
+    image = Column(String(100))  # Hình ảnh của học sinh
+    created_date = Column(DateTime, default=datetime.now())  # Ngày tạo thông tin học sinh
+    grade_id = Column(Integer, ForeignKey('grade.id'))
+    classes_id = Column(Integer, ForeignKey('class.id'))
+    stu_sub = relationship('StudentSbject', backref='student', lazy=True)
+    mark = relationship('MarkStudent', backref='student', lazy=True)
 
     def __str__(self):
-        return self.stu_name
+        return self.name
 
 
 # Quản lý môn học
 class Subject(BaseModel):
     __tablename__ = 'subject'
-    sub_name = Column(String(250), nullable=False)
-    sub_scores = relationship('Score', backref='Subject', lazy=True)
-    sub_student = relationship('Student', secondary='sub_scores')
+    name = Column(String(250), nullable=False)
+    student = relationship('Student', secondary='sub_scores')
+    sub_stu = relationship('StudentSbject', backref='subject', lazy=True)
+    mark_column = relationship('MarkColumn', backref='subject', lazy=True)
 
     def __str__(self):
-        return self.sub_name
+        return self.name
+
+
+class StudentSbject(BaseModel):
+    __tablename__ = 'student_subject'
+    student_id = Column(Integer, ForeignKey(Student.id))
+    subject_id = Column(Integer, ForeignKey(Subject.id))
+    quantity = Column(Integer, default=0)
 
 
 class MarkColumn(BaseModel):
     __tablename__ = 'mark_column'
-    makcol_name = Column(String(150), nullable=False)
-    makcol_score = relationship('Score', backref='mark_column', lazy=True)
+    name = Column(String(150), nullable=False)
+    subject_id = Column(Integer, ForeignKey(Subject.id))
+    mark_id = relationship('MarkStudent', backref='mark_column', lazy=True)
 
 
-class Mark(BaseModel):
-    __tablename__ = 'mark'
-    mk_value = Column(Integer, nullable=False)
-    mk_stu_id = Column(Integer, ForeignKey('student.id'))
-    mk_student = relationship('Student', backref='mark', lazy=True)
-    mk_sub_id = Column(Integer, ForeignKey('subject.id'))
-    mk_subject = relationship('Subject', backref='mark', lazy=True)
-    mk_makcol_id = Column(Integer, ForeignKey('subject.id'))
-    mk_markcol_name = relationship('MarkColumn', backref='mark', lazy=True)
+class MarkStudent(BaseModel):
+    __tablename__ = 'mark_student'
+    value = Column(Integer, nullable=False)
+    student_id = Column(Integer, ForeignKey(Student.id))
+    markcol_id = Column(Integer, ForeignKey(MarkColumn.id))
+
+
+# Viết hàm định nghĩa các chức năng
+def get_grade():
+    return Grade.query.all()
+
+
+def get_classes(grade_id=None):
+    classes = Class.query
+    if grade_id:
+        classes = classes.filter(Class.grade_id.__eq__(grade_id))
+    return classes.all()
+
+
+def get_students(kw=None, classes_id=None):
+    student = Student.query
+    if kw:
+        student = student.filter(Student.name.contains(kw))
+    if classes_id:
+        student = student.filter(Student.classes_id.__eq__(classes_id))
+    return student.all()
+
+
+def get_student_by_id(student_id):
+    return Student.query.get(student_id)
 
 
 if __name__ == '__main__':
