@@ -6,17 +6,17 @@
     {% if students %}
     <div class="row">
         {% for s in students %}
-        <div class="col-md-3" style="padding:1rem;">
+        <div class="col-md-3 col-xs-12" style="padding:1rem;">
             <div class="card">
-                <img class="card-img-top" src="{{ s.stu_image }}" alt="{{ s.stu_name }}">
+                <img class="card-img-top" src="{{ s.image }}" alt="{{ s.name }}">
                 <div class="card-body">
-                    <h4 class="card-title">Tên: {{ s.stu_name }} </h4>
-                    <p class="card-text">Giới tính: {{ s.stu_gender }}</p>
-                    <p class="card-text">Ngày sinh: {{ s.stu_birthday }}</p>
-                    <p class="card-text">Khối: {{ s.stu_grd_name }}</p>
-                    <p class="card-text">Lớp: {{ s.stu_class }}</p>
-                    <a href="/student/{{ s.id }}" class="btn btn-success">Sửa thông tin</a>
-                    <a href="/student/{{ s.id }}" class="btn btn-danger">Xóa</a>
+                    <h4 class="card-title">Tên: {{ s.name }} </h4>
+                    <p class="card-text">Giới tính: {{ s.gender }}</p>
+                    <p class="card-text">Ngày sinh: {{ s.birthday }}</p>
+                    <p class="card-text">Khối: {{ s.grade_id }}</p>
+                    <p class="card-text">Lớp: {{ s.class_id }}</p>
+                    <a href="#" class="btn btn-success">Sửa thông tin</a>
+                    <a href="#" class="btn btn-danger">Xóa</a>
                 </div>
             </div>
         </div>

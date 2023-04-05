@@ -8,11 +8,14 @@ admin = Admin(app, name="BYT EDUCATION ADMINISTRATION", template_mode='bootstrap
 @app.route("/")
 def home():
     grade = models.get_grade()
-    return render_template('index.html', grade=grade)
+    grade_id = request.args.get('grade_id')
+    classes = models.get_classes(grade_id=grade_id)
+    return render_template('index.html', grade=grade, classes=classes)
 
 
 @app.route("/students")
 def man_Student():
+    students = models.get_students()
     return render_template("student.html")
 
 

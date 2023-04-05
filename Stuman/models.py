@@ -74,7 +74,6 @@ class Student(BaseModel):
 class Subject(BaseModel):
     __tablename__ = 'subject'
     name = Column(String(250), nullable=False)
-    student = relationship('Student', secondary='sub_scores')
     sub_stu = relationship('StudentSbject', backref='subject', lazy=True)
     mark_column = relationship('MarkColumn', backref='subject', lazy=True)
 
@@ -115,11 +114,12 @@ def get_classes(grade_id=None):
     return classes.all()
 
 
-def get_students(kw=None, classes_id=None):
+def get_students(kw=None, classes_id=None, grade_id=None):
     student = Student.query
     if kw:
         student = student.filter(Student.name.contains(kw))
-    if classes_id:
+    if classes_id and grade_id:
+        student = student.filter(Student.grade_id.__eq__(grade_id))
         student = student.filter(Student.classes_id.__eq__(classes_id))
     return student.all()
 

@@ -44,7 +44,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         {% for g in grade %}
-                        <li><a class="dropdown-item" href="#">{{ g.name }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('home', grade_id=g.id) }}">{{ g.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </li>
