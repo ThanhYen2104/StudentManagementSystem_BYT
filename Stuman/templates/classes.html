@@ -2,4 +2,23 @@
 
 {% block content %}
 <h2 class="text-center" style="color:#2f7e87;">Quản lý lớp học</h2>
+<table>
+    <tr>
+        <th>Mã số</th>
+        <th>Họ tên</th>
+        <th>Giới tính</th>
+        <th>Sinh nhật</th>
+        <th>Địa chỉ</th>
+    </tr>
+    {% for s in students %}
+    <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.name }}</td>
+        <td>{{ s.gender }}</td>
+        <td>{{ s.birthday }}</td>
+        <td>{{ s.address }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
 {% endblock %}

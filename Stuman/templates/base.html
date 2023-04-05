@@ -23,7 +23,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Trang chủ</a>
+                    <a class="nav-link {% if 'grade_id' not in request.args %}active{% endif %}" aria-current="page" href="/">Trang chủ</a>
                 </li>
                 </li>
                 <li class="nav-item dropdown">
@@ -44,7 +44,9 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         {% for g in grade %}
-                        <li><a class="dropdown-item" href="{{ url_for('home', grade_id=g.id) }}">{{ g.name }}</a></li>
+                        <li class="{% if 'grade_id' in request.args and g.id == request.args.grade.id|int %}active{% endif %}">
+                            <a class="dropdown-item" href="{{ url_for('home', grade_id=g.id) }}">{{ g.name }}</a>
+                        </li>
                         {% endfor %}
                     </ul>
                 </li>
@@ -54,17 +56,19 @@
                         BÁO CÁO
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Thông tin học sinh</a></li>
-                        <li><a class="dropdown-item" href="#">Thông tin lớp học</a></li>
+                        <li><a class="dropdown-item" href="#">Báo cáo học sinh</a></li>
+                        <li><a class="dropdown-item" href="#">Báo cáo lớp học</a></li>
                     </ul>
                 </li>
             </ul>
 
             <form class="d-flex">
-                <input class="form-control me-2" type="search" name="kw" placeholder="Nhập tên học sinh" aria-label="Search">
+                <input class="form-control me-2" type="search" name="kw" placeholder="Nhập tên học sinh"
+                       aria-label="Search">
                 <button class="btn btn-sm btn-outline-secondary" type="submit" style="color: white; font-weight: bold;">Tìm</button>
             </form>
             <ul class="nav justify-content-end">
+                <button class="btn btn-outline-info" type="submit" style="margin-left: 0.69rem;">Đăng ký</button>
                 <button class="btn btn-outline-success" type="submit" style="margin-left: 0.69rem;">Đăng nhập</button>
                 <button class="btn btn-outline-danger" type="submit" style="margin-left: 0.60rem;">Đăng xuất</button>
             </ul>

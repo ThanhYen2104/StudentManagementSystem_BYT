@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from StudentManagementSystem_BYT.Stuman import db, app
@@ -19,7 +19,7 @@ class User(BaseModel, UserMixin):
     avatar = Column(String(100), default=None)
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(100), nullable=False)
-    user_role = Column(String(20), default='user')
+    user_role = Column(String(20), default='User')
 
     def __str__(self):
         return self.name
@@ -42,7 +42,7 @@ class Grade(BaseModel):
 class Class(BaseModel):
     __tablename__ = 'class'
     name = Column(String(250), nullable=False)
-    grade_id = Column(Integer, ForeignKey('grade.id'))
+    grade_id = Column(Integer, ForeignKey(Grade.id))
     student = relationship('Student', backref='class', lazy=True)
 
     def __str__(self):
@@ -61,8 +61,8 @@ class Student(BaseModel):
     email = Column(String(200))
     image = Column(String(100))  # Hình ảnh của học sinh
     created_date = Column(DateTime, default=datetime.now())  # Ngày tạo thông tin học sinh
-    grade_id = Column(Integer, ForeignKey('grade.id'))
-    classes_id = Column(Integer, ForeignKey('class.id'))
+    grade_id = Column(Integer, ForeignKey(Grade.id))
+    classes_id = Column(Integer, ForeignKey(Class.id))
     stu_sub = relationship('StudentSbject', backref='student', lazy=True)
     mark = relationship('MarkStudent', backref='student', lazy=True)
 
@@ -97,7 +97,7 @@ class MarkColumn(BaseModel):
 
 class MarkStudent(BaseModel):
     __tablename__ = 'mark_student'
-    value = Column(Integer, nullable=False)
+    value = Column(Float, nullable=False, default=0)
     student_id = Column(Integer, ForeignKey(Student.id))
     markcol_id = Column(Integer, ForeignKey(MarkColumn.id))
 
