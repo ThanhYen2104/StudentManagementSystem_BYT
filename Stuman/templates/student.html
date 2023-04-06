@@ -2,6 +2,8 @@
 
 {% block content %}
 <h2 class="text-center" style="color:#2f7e87;">Quản lý học sinh</h2>
+<hr>
+<hr>
 <div>
     {% if students %}
     <div class="row">
@@ -12,7 +14,6 @@
                 <div class="card-body">
                     <h4 class="card-title">Tên: {{ s.name }} </h4>
                     <p class="card-text">Giới tính: {{ s.gender }}</p>
-                    <p class="card-text">Ngày sinh: {{ s.birthday }}</p>
                     <p class="card-text">Khối: {{ s.grade_id }}</p>
                     <p class="card-text">Lớp: {{ s.class_id }}</p>
                     <a href="#" class="btn btn-success">Sửa thông tin</a>
