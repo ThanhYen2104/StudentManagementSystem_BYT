@@ -24,6 +24,8 @@
             }
         }
 
+
+
     </style>
 </head>
 
@@ -91,24 +93,36 @@
             </form>
             <div>
                 <ul class="nav justify-content-end">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{{ url_for('home') }}">
+                            {% if current_user.avatar %}
+                            <img src="{{ current_user.avatar }}" width="45px;" alt="{{current_user.name}}">
+                            {% else %}
+                            <img src="{{ url_for('static', filename='image/ad.jpg') }}" width="45px;" alt="{{current_user.name}}">
+                            {% endif %}
+                            {{ current_user.username }}
+                        </a>
+                    </li>
+                    <li style="margin-left: 0.35rem;">
+                        <a class="btn btn-outline-danger" href="/logout" role="button">
+                            Đăng xuất
+                        </a>
+                    </li>
+                    {% else %}
                     <li style="margin-left: 0.4rem;">
                         <a class="btn btn-outline-primary" href="/register" role="button">
                             Đăng ký
                         </a>
                     </li>
                     <li style="margin-left: 0.35rem;">
-                        <a class=" btn btn-outline-success" href="#collapse2" role="button">
+                        <a class=" btn btn-outline-success" href="/login" role="button">
                             Đăng nhập
                         </a>
                     </li>
-                    <li style="margin-left: 0.35rem;">
-                        <a class="btn btn-outline-danger" href="#collapse3" role="button">
-                            Đăng xuất
-                        </a>
-                    </li>
+                    {% endif %}
                 </ul>
             </div>
-            </ul>
         </div>
     </div>
 </nav>

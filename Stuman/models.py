@@ -33,6 +33,21 @@ class User(BaseModel, UserMixin):
         return self.name
 
 
+# Bảng thông tin năm học
+class Semester(BaseModel):
+    __tablename__ = 'semester'
+    name = Column(String(30), nullable=False)
+    key = Column(String(10), nullable=False)
+    year_start = Column(DateTime, nullable=False)
+    year_end = Column(DateTime, nullable=False)
+    student = relationship('Student', backref='semester', lazy=True)
+    grade = relationship('Grade', backref='semester', lazy=True)
+    classes = relationship('Class', backref='semester', lazy=True)
+    subject = relationship('Subject', backref='semester', lazy=True)
+    def __str__(self):
+        return self.name
+
+
 # Bảng thông tin khối lớp học
 class Grade(BaseModel):
     __tablename__ = 'grade'
@@ -41,6 +56,7 @@ class Grade(BaseModel):
     description = Column(String(100))  # Mô tả thông tin lớp
     students = relationship('Student', backref='grade', lazy=False)  # Học sinh thuộc lớp
     classes = relationship('Class', backref='grade', lazy=False)
+    semester_id = Column(Integer, ForeignKey(Semester.id))
 
     def __str__(self):
         return self.name
@@ -50,8 +66,9 @@ class Grade(BaseModel):
 class Class(BaseModel):
     __tablename__ = 'class'
     name = Column(String(250), nullable=False)
-    grade_id = Column(Integer, ForeignKey(Grade.id))
     student = relationship('Student', backref='class', lazy=True)
+    grade_id = Column(Integer, ForeignKey(Grade.id))
+    semester_id = Column(Integer, ForeignKey(Semester.id))
 
     def __str__(self):
         return self.name
@@ -71,6 +88,7 @@ class Student(BaseModel):
     created_date = Column(DateTime, default=datetime.now())  # Ngày tạo thông tin học sinh
     grade_id = Column(Integer, ForeignKey(Grade.id))
     classes_id = Column(Integer, ForeignKey(Class.id))
+    semester_id = Column(Integer, ForeignKey(Semester.id))
     stu_sub = relationship('StudentSubject', backref='student', lazy=True)
     mark = relationship('MarkStudent', backref='student', lazy=True)
 
@@ -82,6 +100,7 @@ class Student(BaseModel):
 class Subject(BaseModel):
     __tablename__ = 'subject'
     name = Column(String(250), nullable=False)
+    semester_id = Column(Integer, ForeignKey(Semester.id))
     sub_stu = relationship('StudentSubject', backref='subject', lazy=True)
     mark_column = relationship('MarkColumn', backref='subject', lazy=True)
 
@@ -111,9 +130,6 @@ class MarkStudent(BaseModel):
 
 
 # Viết hàm định nghĩa các chức năng
-def get_grade():
-    return Grade.query.all()
-
 
 def get_classes(grade_id=None):
     classes = Class.query
@@ -135,6 +151,9 @@ def get_students(kw=None, classes_id=None, grade_id=None):
 def get_student_by_id(student_id):
     return Student.query.get(student_id)
 
+def get_user_by_id(user_id):
+    return User.query.get(user_id)
+
 
 def add_user(name, username, password, **kwargs):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
@@ -143,6 +162,12 @@ def add_user(name, username, password, **kwargs):
     db.session.add(user)
     db.session.commit()
 
+
+def check_login(username, password):
+    if username and password:
+        password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+        return User.query.filter(User.username.__eq__(username.strip()),
+                                 User.password.__eq__(password)).first()
 
 if __name__ == '__main__':
     with app.app_context():

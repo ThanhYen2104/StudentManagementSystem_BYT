@@ -1,5 +1,7 @@
 from flask import render_template, request, redirect, url_for
-from StudentManagementSystem_BYT.Stuman import app, models
+from StudentManagementSystem_BYT.Stuman import app, models, login
+from StudentManagementSystem_BYT.Stuman.admin import *
+from flask_login import login_user, logout_user
 import cloudinary.uploader
 
 
@@ -18,6 +20,11 @@ def common_reponse():
     return {
         'grade': Grade.query.all()
     }
+
+
+@login.user_loader
+def user_load(user_id):
+    return models.get_user_by_id(user_id=user_id)
 
 
 @app.route("/register", methods=['get', 'post'])
@@ -42,8 +49,29 @@ def register():
         except Exception as ex:
             err_msg = 'Hệ thống nhận được lỗi ' + str(ex)
         else:
-            return redirect(url_for('home'))
+            return redirect(url_for('login'))
     return render_template('register.html', err_msg=err_msg)
+
+
+@app.route("/login", methods=['get', 'post'])
+def login():
+    err_msg = ''
+    if request.method.__eq__('POST'):
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user = models.check_login(username=username, password=password)
+        if user:
+            login_user(user=user)
+            return redirect(url_for('home'))
+        else:
+            err_msg = 'Tên đăng nhập hoặc mật khẩu không chính xác!'
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 
 @app.route("/students")
