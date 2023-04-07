@@ -1,15 +1,49 @@
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for
 from StudentManagementSystem_BYT.Stuman import app, models
+import cloudinary.uploader
 
 
 @app.route("/")
 def home():
-    grade = models.get_grade()
     grade_id = request.args.get('grade_id')
+    classes = models.get_classes(grade_id=grade_id)
     classes_id = request.args.get('classes_id')
     kw = request.args.get('kw')
     student = models.get_students(kw=kw, grade_id=grade_id, classes_id=classes_id)
-    return render_template('index.html', grade=grade, student=student)
+    return render_template('index.html', student=student, classes=classes)
+
+
+@app.context_processor
+def common_reponse():
+    return {
+        'grade': Grade.query.all()
+    }
+
+
+@app.route("/register", methods=['get', 'post'])
+def register():
+    err_msg = ""
+    if request.method.__eq__('POST'):
+        name = request.form.get('name')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        confirm = request.form.get('confirm')
+        email = request.form.get('email')
+        avatar_path = None
+        try:
+            if password.strip().__eq__(confirm.strip()):
+                avatar = request.files.get('avatar')
+                if avatar:
+                    res = cloudinary.uploader.upload(avatar)
+                    avatar_path = res['secure_url']
+                models.add_user(name=name, username=username, password=password, email=email, avatar=avatar_path)
+            else:
+                err_msg = 'Mật khẩu không trùng khớp!'
+        except Exception as ex:
+            err_msg = 'Hệ thống nhận được lỗi ' + str(ex)
+        else:
+            return redirect(url_for('home'))
+    return render_template('register.html', err_msg=err_msg)
 
 
 @app.route("/students")

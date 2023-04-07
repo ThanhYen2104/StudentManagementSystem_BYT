@@ -1,8 +1,9 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float, Enum
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from StudentManagementSystem_BYT.Stuman import db, app
 from datetime import datetime
+from enum import Enum as UserEnum
 import hashlib
 
 
@@ -13,13 +14,20 @@ class BaseModel(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
 
 
+class UserRole(UserEnum):
+    ADMIN = 1
+    STUDENT = 2
+    USER = 3
+
+
 # Tạo bảng mới theo db.Model
 class User(BaseModel, UserMixin):
     name = Column(String(100), nullable=False)
     avatar = Column(String(100), default=None)
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(100), nullable=False)
-    user_role = Column(String(20), default='User')
+    email = Column(String(100))
+    user_role = Column(Enum(UserRole), default=UserRole.USER)
 
     def __str__(self):
         return self.name
@@ -63,7 +71,7 @@ class Student(BaseModel):
     created_date = Column(DateTime, default=datetime.now())  # Ngày tạo thông tin học sinh
     grade_id = Column(Integer, ForeignKey(Grade.id))
     classes_id = Column(Integer, ForeignKey(Class.id))
-    stu_sub = relationship('StudentSbject', backref='student', lazy=True)
+    stu_sub = relationship('StudentSubject', backref='student', lazy=True)
     mark = relationship('MarkStudent', backref='student', lazy=True)
 
     def __str__(self):
@@ -74,14 +82,14 @@ class Student(BaseModel):
 class Subject(BaseModel):
     __tablename__ = 'subject'
     name = Column(String(250), nullable=False)
-    sub_stu = relationship('StudentSbject', backref='subject', lazy=True)
+    sub_stu = relationship('StudentSubject', backref='subject', lazy=True)
     mark_column = relationship('MarkColumn', backref='subject', lazy=True)
 
     def __str__(self):
         return self.name
 
 
-class StudentSbject(BaseModel):
+class StudentSubject(BaseModel):
     __tablename__ = 'student_subject'
     student_id = Column(Integer, ForeignKey(Student.id))
     subject_id = Column(Integer, ForeignKey(Subject.id))
@@ -128,6 +136,15 @@ def get_student_by_id(student_id):
     return Student.query.get(student_id)
 
 
+def add_user(name, username, password, **kwargs):
+    password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+    user = User(name=name.strip(), username=username.strip(), password=password, email=kwargs.get('email'),
+                avatar=kwargs.get('avatar'))
+    db.session.add(user)
+    db.session.commit()
+
+
 if __name__ == '__main__':
     with app.app_context():
+        # db.drop_all()
         db.create_all()
