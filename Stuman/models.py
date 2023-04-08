@@ -28,6 +28,7 @@ class User(BaseModel, UserMixin):
     password = Column(String(100), nullable=False)
     email = Column(String(100))
     user_role = Column(Enum(UserRole), default=UserRole.USER)
+    student = relationship('Student', uselist=False, backref='User')
 
     def __str__(self):
         return self.name
@@ -44,6 +45,7 @@ class Semester(BaseModel):
     grade = relationship('Grade', backref='semester', lazy=True)
     classes = relationship('Class', backref='semester', lazy=True)
     subject = relationship('Subject', backref='semester', lazy=True)
+
     def __str__(self):
         return self.name
 
@@ -89,6 +91,7 @@ class Student(BaseModel):
     grade_id = Column(Integer, ForeignKey(Grade.id))
     classes_id = Column(Integer, ForeignKey(Class.id))
     semester_id = Column(Integer, ForeignKey(Semester.id))
+    user_id = Column(Integer, ForeignKey(User.id))
     stu_sub = relationship('StudentSubject', backref='student', lazy=True)
     mark = relationship('MarkStudent', backref='student', lazy=True)
 
@@ -151,13 +154,32 @@ def get_students(kw=None, classes_id=None, grade_id=None):
 def get_student_by_id(student_id):
     return Student.query.get(student_id)
 
+
+def get_student_by_class(class_id=None):
+    student = Student.query
+    if class_id:
+        student.filter(Student.classes_id.__eq__(class_id))
+    return student.all()
+
+
+def get_class_by_id(class_id):
+    return Class.query.get(class_id)
+
+
 def get_user_by_id(user_id):
     return User.query.get(user_id)
 
 
+# def get_mark(mark_id):
+#     pass
+
+
 def add_user(name, username, password, **kwargs):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
-    user = User(name=name.strip(), username=username.strip(), password=password, email=kwargs.get('email'),
+    user = User(name=name.strip(),
+                username=username.strip(),
+                password=password,
+                email=kwargs.get('email'),
                 avatar=kwargs.get('avatar'))
     db.session.add(user)
     db.session.commit()
@@ -168,6 +190,7 @@ def check_login(username, password):
         password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
         return User.query.filter(User.username.__eq__(username.strip()),
                                  User.password.__eq__(password)).first()
+
 
 if __name__ == '__main__':
     with app.app_context():

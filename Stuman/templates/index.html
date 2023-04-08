@@ -15,10 +15,18 @@
                 <div class="card-body">
                     <h4 class="card-title">Tên: {{ s.name }} </h4>
                     <p class="card-text">Giới tính: {{ s.gender }}</p>
-                    <p class="card-text">Khối: {{ s.grade_id }}</p>
-                    <p class="card-text">Lớp: {{ s.classes_id }}</p>
-<!--                    <a href="#" class="btn btn-success">Sửa thông tin</a>-->
-<!--                    <a href="#" class="btn btn-danger">Xóa</a>-->
+                    {% for g in grade %}
+                    {% if g.id and s.grade_id==g.id %}
+                    <p class="card-text">Khối: {{ g.name }}</p>
+                    {% endif %}
+                    {% endfor %}
+                    {% for c in classes %}
+                    {% if c.id and s.classes_id==c.id %}
+                    <p class="card-text">Lớp: {{ c.name }}</p>
+                    {% endif %}
+                    {% endfor %}
+                    <!--                    <a href="#" class="btn btn-success">Sửa thông tin</a>-->
+                    <!--                    <a href="#" class="btn btn-danger">Xóa</a>-->
                 </div>
             </div>
         </div>

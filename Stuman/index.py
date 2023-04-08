@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, session
 from StudentManagementSystem_BYT.Stuman import app, models, login
 from StudentManagementSystem_BYT.Stuman.admin import *
 from flask_login import login_user, logout_user
@@ -16,7 +16,7 @@ def home():
 
 
 @app.context_processor
-def common_reponse():
+def common_response():
     return {
         'grade': Grade.query.all()
     }
@@ -55,17 +55,18 @@ def register():
 
 @app.route("/login", methods=['get', 'post'])
 def login():
-    err_msg = ''
-    if request.method.__eq__('POST'):
-        username = request.form.get('username')
-        password = request.form.get('password')
+    err_msg = ""
+    if request.method.__eq__('GET'):
+        username = request.form['username']
+        password = request.form['password']
         user = models.check_login(username=username, password=password)
         if user:
             login_user(user=user)
             return redirect(url_for('home'))
         else:
             err_msg = 'Tên đăng nhập hoặc mật khẩu không chính xác!'
-    return render_template('login.html')
+
+    return render_template('login.html', err_msg=err_msg)
 
 
 @app.route('/logout')
@@ -80,15 +81,26 @@ def man_Student():
     return render_template("student.html", students=students)
 
 
-@app.route("/student/<int:student_id>")
+@app.route("/student/<int:student_id>", methods=['GET', 'POST'])
 def student_info(student_id):
-    student_id = models.get_student_by_id(student_id)
+    student = models.get_student_by_id(student_id)
+    if request.method.__eq__('POST'):
+        student_id.name = request.form['name']
+        student_id.gender = request.form['gender']
+        student_id.birthday = request.form['birthday']
+        student_id.address = request.form['address']
+        student_id.contact_1 = request.form['contact_1']
+        student_id.email = request.form['email']
+        db.session.commit()
+        return redirect(url_for('student_info', student=student))
+    else:
+        return render_template('student.html', student=student)
 
 
-@app.route("/class")
-def man_Class():
-    students = models.get_students()
-    return render_template("classes.html", students=students)
+@app.route("/class/<int:class_id>")
+def man_Class(class_id):
+    classes = models.get_class_by_id(class_id)
+    return render_template("classes.html", classes=classes)
 
 
 @app.route("/subject")

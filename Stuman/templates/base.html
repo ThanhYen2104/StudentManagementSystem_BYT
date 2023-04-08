@@ -24,8 +24,6 @@
             }
         }
 
-
-
     </style>
 </head>
 
@@ -66,7 +64,12 @@
                             <a class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
                                href="{{ url_for('home', grade_id=g.id) }}">{{ g.name }}</a>
                             <ul class="dropdown-menu">
-                                <li><a href="#" class="dropdown-item">lớp ...</a></li>
+                                {% for c in classes %}
+                                {% if c.id and c.grade_id==g.id %}
+                                <li><a href="{{ url_for('man_Class', class_id=c.id) }}" class="dropdown-item">{{ c.name
+                                    }}</a></li>
+                                {% endif %}
+                                {% endfor %}
                             </ul>
                         </li>
                         {% endfor %}
@@ -97,9 +100,11 @@
                     <li class="nav-item">
                         <a class="nav-link text-danger" href="{{ url_for('home') }}">
                             {% if current_user.avatar %}
-                            <img src="{{ current_user.avatar }}" width="45px;" alt="{{current_user.name}}">
+                            <img src="{{ current_user.avatar }}" width="30px;" height="30px;"
+                                 alt="{{current_user.name}}">
                             {% else %}
-                            <img src="{{ url_for('static', filename='image/ad.jpg') }}" width="45px;" alt="{{current_user.name}}">
+                            <img src="{{ url_for('static', filename='image/ad.jpg') }}" width="30px;" height="30px;"
+                                 alt="{{current_user.name}}">
                             {% endif %}
                             {{ current_user.username }}
                         </a>

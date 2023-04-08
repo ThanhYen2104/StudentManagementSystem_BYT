@@ -5,11 +5,11 @@
 
 {% if err_msg %}
 <div class="alert alert-danger">
-    <h4>{{ err_msg }}</h4>
+    <h5>{{ err_msg }}</h5>
 </div>
 {% endif %}
 
-<form action="/login" method="post">
+<form action="/login" method="get">
     <div class="form-group">
         <label>Tên đăng nhập</label>
         <input style="margin: 7px 0 7px 0;" type="text" class="form-control" name="username" placeholder="Nhập username" required>
