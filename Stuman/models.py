@@ -92,7 +92,7 @@ class Student(BaseModel):
     classes_id = Column(Integer, ForeignKey(Class.id))
     semester_id = Column(Integer, ForeignKey(Semester.id))
     user_id = Column(Integer, ForeignKey(User.id))
-    stu_sub = relationship('StudentSubject', backref='student', lazy=True)
+    student_sub = relationship('StudentSubject', backref='student', lazy=True)
     mark = relationship('MarkColumn', backref='student', lazy=True)
 
     def __str__(self):
@@ -104,8 +104,8 @@ class Subject(BaseModel):
     __tablename__ = 'subject'
     name = Column(String(250), nullable=False)
     semester_id = Column(Integer, ForeignKey(Semester.id))
-    sub_stu = relationship('StudentSubject', backref='subject', lazy=True)
-    mark_column = relationship('MarkColumn', backref='subject', lazy=True)
+    subject_student = relationship('StudentSubject', backref='subject', lazy=True)
+    mark = relationship('MarkColumn', backref='subject', lazy=True)
 
     def __str__(self):
         return self.name
@@ -113,18 +113,17 @@ class Subject(BaseModel):
 
 class StudentSubject(BaseModel):
     __tablename__ = 'student_subject'
-    student = Column(Integer, ForeignKey(Student.id))
-    subject = Column(Integer, ForeignKey(Subject.id))
+    student_id = Column(Integer, ForeignKey(Student.id))
+    subject_id = Column(Integer, ForeignKey(Subject.id))
     quantity = Column(Integer, default=1)
-    mark = relationship('MarkColumn', backref='student_subject', lazy=True)
-
 
 
 class MarkColumn(BaseModel):
     __tablename__ = 'mark_column'
     name = Column(String(50), nullable=False)
     value = Column(Float, nullable=False, default=0.0)
-    student_subject = Column(Integer, ForeignKey(StudentSubject.id))
+    student_id = Column(Integer, ForeignKey(Student.id))
+    subject_id = Column(Integer, ForeignKey(Subject.id))
 
     def __str__(self):
         return self.name
@@ -170,6 +169,12 @@ def get_user_by_id(user_id):
 # def get_mark(mark_id):
 #     pass
 
+def check_login(username, password):
+    if username and password:
+        password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+        return User.query.filter(User.username.__eq__(username.strip()),
+                                 User.password.__eq__(password)).first()
+
 
 def add_user(name, username, password, **kwargs):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
@@ -182,15 +187,8 @@ def add_user(name, username, password, **kwargs):
     db.session.commit()
 
 
-def check_login(username, password):
-    if username and password:
-        password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
-        return User.query.filter(User.username.__eq__(username.strip()),
-                                 User.password.__eq__(password)).first()
-
-
 if __name__ == '__main__':
     with app.app_context():
         # db.session.commit()
-        db.drop_all()
-        # db.create_all()
+        # db.drop_all()
+        db.create_all()

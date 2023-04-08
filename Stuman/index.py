@@ -22,11 +22,6 @@ def common_response():
     }
 
 
-@login.user_loader
-def user_load(user_id):
-    return models.get_user_by_id(user_id=user_id)
-
-
 @app.route("/register", methods=['get', 'post'])
 def register():
     err_msg = ""
@@ -49,12 +44,12 @@ def register():
         except Exception as ex:
             err_msg = 'Hệ thống nhận được lỗi ' + str(ex)
         else:
-            return redirect(url_for('login'))
+            return redirect(url_for('user_login'))
     return render_template('register.html', err_msg=err_msg)
 
 
 @app.route("/login", methods=['get', 'post'])
-def login():
+def user_login():
     err_msg = ""
     if request.method.__eq__('POST'):
         username = request.form.get('username')
@@ -69,6 +64,11 @@ def login():
     return render_template('login.html', err_msg=err_msg)
 
 
+@login.user_loader
+def user_load(user_id):
+    return models.get_user_by_id(user_id=user_id)
+
+
 @app.route('/logout')
 def logout():
     logout_user()
@@ -77,30 +77,35 @@ def logout():
 
 @app.route("/students")
 def man_Student():
-    students = models.get_students()
-    return render_template("student.html", students=students)
+    grade_id = request.args.get('grade_id')
+    classes = models.get_classes(grade_id=grade_id)
+    classes_id = request.args.get('classes_id')
+    student_id = request.args.get('student_id')
+    kw = request.args.get('kw')
+    students = models.get_students(kw=kw, classes_id=classes_id, grade_id=grade_id)
+    return render_template("student.html", students=students, classes=classes)
 
 
 @app.route("/student/<int:student_id>", methods=['GET', 'POST'])
 def student_info(student_id):
-    student = models.get_student_by_id(student_id)
-    if request.method.__eq__('POST'):
-        student_id.name = request.form['name']
-        student_id.gender = request.form['gender']
-        student_id.birthday = request.form['birthday']
-        student_id.address = request.form['address']
-        student_id.contact_1 = request.form['contact_1']
-        student_id.email = request.form['email']
-        db.session.commit()
-        return redirect(url_for('student_info', student=student))
-    else:
-        return render_template('student.html', student=student)
+    grade_id = request.args.get('grade_id')
+    classes = models.get_classes(grade_id=grade_id)
+    class_id = request.args.get('class_id')
+    student_id = request.args.get('student_id')
+    kw = request.args.get('kw')
+    student = models.get_students(kw=kw, class_id=class_id, grade_id=grade_id)
+    return render_template("student_info.html", student=student, classes=classes)
 
 
 @app.route("/class/<int:class_id>")
 def man_Class(class_id):
-    classes = models.get_class_by_id(class_id)
-    return render_template("classes.html", classes=classes)
+    grade_id = request.args.get('grade_id')
+    classes = models.get_classes(grade_id=grade_id)
+    classes_id = request.args.get('classes_id')
+    student_id = request.args.get('student_id')
+    kw = request.args.get('kw')
+    students = models.get_students(kw=kw, classes_id=classes_id, grade_id=grade_id)
+    return render_template("classes.html", students=students, classes=classes)
 
 
 @app.route("/subject")

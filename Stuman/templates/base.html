@@ -66,8 +66,7 @@
                             <ul class="dropdown-menu">
                                 {% for c in classes %}
                                 {% if c.id and c.grade_id==g.id %}
-                                <li><a href="{{ url_for('man_Class', class_id=c.id) }}" class="dropdown-item">{{ c.name
-                                    }}</a></li>
+                                <li><a href="{{ url_for('man_Class', class_id=c.id) }}" class="dropdown-item">{{ c.name }}</a></li>
                                 {% endif %}
                                 {% endfor %}
                             </ul>
@@ -121,7 +120,7 @@
                         </a>
                     </li>
                     <li style="margin-left: 0.35rem;">
-                        <a class=" btn btn-outline-success" href="/login" role="button">
+                        <a class=" btn btn-outline-success" href="{{ url_for('user_login') }}" role="button">
                             Đăng nhập
                         </a>
                     </li>
