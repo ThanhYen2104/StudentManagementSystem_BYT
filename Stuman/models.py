@@ -93,7 +93,7 @@ class Student(BaseModel):
     semester_id = Column(Integer, ForeignKey(Semester.id))
     user_id = Column(Integer, ForeignKey(User.id))
     stu_sub = relationship('StudentSubject', backref='student', lazy=True)
-    mark = relationship('MarkStudent', backref='student', lazy=True)
+    mark = relationship('MarkColumn', backref='student', lazy=True)
 
     def __str__(self):
         return self.name
@@ -113,27 +113,24 @@ class Subject(BaseModel):
 
 class StudentSubject(BaseModel):
     __tablename__ = 'student_subject'
-    student_id = Column(Integer, ForeignKey(Student.id))
-    subject_id = Column(Integer, ForeignKey(Subject.id))
-    quantity = Column(Integer, default=0)
+    student = Column(Integer, ForeignKey(Student.id))
+    subject = Column(Integer, ForeignKey(Subject.id))
+    quantity = Column(Integer, default=1)
+    mark = relationship('MarkColumn', backref='student_subject', lazy=True)
+
 
 
 class MarkColumn(BaseModel):
     __tablename__ = 'mark_column'
-    name = Column(String(150), nullable=False)
-    subject_id = Column(Integer, ForeignKey(Subject.id))
-    mark_id = relationship('MarkStudent', backref='mark_column', lazy=True)
+    name = Column(String(50), nullable=False)
+    value = Column(Float, nullable=False, default=0.0)
+    student_subject = Column(Integer, ForeignKey(StudentSubject.id))
 
-
-class MarkStudent(BaseModel):
-    __tablename__ = 'mark_student'
-    value = Column(Float, nullable=False, default=0)
-    student_id = Column(Integer, ForeignKey(Student.id))
-    markcol_id = Column(Integer, ForeignKey(MarkColumn.id))
+    def __str__(self):
+        return self.name
 
 
 # Viết hàm định nghĩa các chức năng
-
 def get_classes(grade_id=None):
     classes = Class.query
     if grade_id:
@@ -194,5 +191,6 @@ def check_login(username, password):
 
 if __name__ == '__main__':
     with app.app_context():
-        # db.drop_all()
-        db.create_all()
+        # db.session.commit()
+        db.drop_all()
+        # db.create_all()

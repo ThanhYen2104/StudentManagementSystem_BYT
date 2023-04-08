@@ -9,7 +9,7 @@
 </div>
 {% endif %}
 
-<form action="/login" method="get">
+<form action="{{ url_for('login') }}" method="post">
     <div class="form-group">
         <label>Tên đăng nhập</label>
         <input style="margin: 7px 0 7px 0;" type="text" class="form-control" name="username" placeholder="Nhập username" required>

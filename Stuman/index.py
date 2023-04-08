@@ -56,9 +56,9 @@ def register():
 @app.route("/login", methods=['get', 'post'])
 def login():
     err_msg = ""
-    if request.method.__eq__('GET'):
-        username = request.form['username']
-        password = request.form['password']
+    if request.method.__eq__('POST'):
+        username = request.form.get('username')
+        password = request.form.get('password')
         user = models.check_login(username=username, password=password)
         if user:
             login_user(user=user)

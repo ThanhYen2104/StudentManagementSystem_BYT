@@ -3,7 +3,7 @@ from sqlalchemy import inspect
 from StudentManagementSystem_BYT.Stuman import app, db
 from flask_admin import Admin
 from StudentManagementSystem_BYT.Stuman.models import Grade, Class, Student, StudentSubject, Semester
-from StudentManagementSystem_BYT.Stuman.models import Subject, MarkColumn, MarkStudent, User
+from StudentManagementSystem_BYT.Stuman.models import Subject, MarkColumn, User
 from flask_admin.contrib.sqla import ModelView
 
 
@@ -60,10 +60,6 @@ class MarkColumnView(ModelView):
     column_list = [c_attr.key for c_attr in inspect(MarkColumn).mapper.column_attrs]
 
 
-class MarkStudentView(ModelView):
-    column_display_pk = True
-    column_hide_backrefs = False
-    column_list = [c_attr.key for c_attr in inspect(MarkStudent).mapper.column_attrs]
 
 
 admin = Admin(app, name="QUẢN TRỊ BYT", template_mode='bootstrap4')
@@ -74,5 +70,4 @@ admin.add_view(StudentView(Student, db.session, name="Học sinh"))
 admin.add_view(SubjectView(Subject, db.session, name="Môn học"))
 admin.add_view(StudentSubjectView(StudentSubject, db.session, name="Thêm môn cho HS"))
 admin.add_views(MarkColumnView(MarkColumn, db.session, name="Cột điểm"))
-admin.add_view(MarkStudentView(MarkStudent, db.session, name="Nhập điểm"))
 admin.add_view(UserView(User, db.session, name="Tài khoản"))
