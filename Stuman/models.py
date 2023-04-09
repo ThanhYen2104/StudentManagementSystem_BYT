@@ -16,7 +16,7 @@ class BaseModel(db.Model):
 
 class UserRole(enum.Enum):
     ADMIN = 1
-    STUDENT = 2
+    TEACHER = 2
     USER = 3
 
 
@@ -29,7 +29,7 @@ class Gender(enum.Enum):
 class SubjectName(enum.Enum):
     HOUR_TEST = 7
     MINUTES_15_TEST = 8
-    FINAL_EXAM_MARK=9
+    FINAL_EXAM_MARK = 9
 
 
 # Tạo bảng mới theo db.Model
