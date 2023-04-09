@@ -49,7 +49,6 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="/students">Hồ sơ học sinh</a></li>
-                        <li><a class="dropdown-item" href="/subject">Môn học</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -74,6 +73,8 @@
                         {% endfor %}
                     </ul>
                 </li>
+                {% if current_user.is_authenticated %}
+                {% if current_user.user_role==current_user.user_role.ADMIN %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
@@ -84,6 +85,21 @@
                         <li><a class="dropdown-item" href="#">Báo cáo lớp học</a></li>
                     </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown4" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        CHỈNH SỬA
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Học kỳ</a></li>
+                        <li><a class="dropdown-item" href="#">Khối lớp</a></li>
+                        <li><a class="dropdown-item" href="#">Lớp học</a></li>
+                        <li><a class="dropdown-item" href="#">Thêm học sinh mới</a></li>
+                        <li><a class="dropdown-item" href="#">Nhập điểm</a></li>
+                    </ul>
+                </li>
+                {% endif %}
+                {% endif %}
             </ul>
             <form class="d-flex">
                 <input class="form-control me-2" type="search" name="kw" placeholder="Nhập tên học sinh"
@@ -97,7 +113,7 @@
                 <ul class="nav justify-content-end">
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link text-danger" href="{{ url_for('home') }}">
+                        <a class="nav-link text-danger" href="{{ url_for('user_info', user_id=current_user.id) }}">
                             {% if current_user.avatar %}
                             <img src="{{ current_user.avatar }}" width="30px;" height="30px;"
                                  alt="{{current_user.name}}">
@@ -108,19 +124,21 @@
                             {{ current_user.username }}
                         </a>
                     </li>
+                    {% if current_user.user_role==current_user.user_role.ADMIN %}
+                    <li style="margin-left: 0.4rem;">
+                        <a class="btn btn-outline-primary" href="/register" role="button">
+                            Đăng ký
+                        </a>
+                    </li>
+                    {% endif %}
                     <li style="margin-left: 0.35rem;">
                         <a class="btn btn-outline-danger" href="/logout" role="button">
                             Đăng xuất
                         </a>
                     </li>
                     {% else %}
-                    <li style="margin-left: 0.4rem;">
-                        <a class="btn btn-outline-primary" href="/register" role="button">
-                            Đăng ký
-                        </a>
-                    </li>
                     <li style="margin-left: 0.35rem;">
-                        <a class=" btn btn-outline-success" href="{{ url_for('user_login') }}" role="button">
+                        <a class=" btn btn-outline-success" href="/login" role="button">
                             Đăng nhập
                         </a>
                     </li>

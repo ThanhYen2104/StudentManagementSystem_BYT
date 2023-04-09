@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float, Enum
 from sqlalchemy.orm import relationship
-from flask_login import UserMixin
 from StudentManagementSystem_BYT.Stuman import db, app
 from datetime import datetime
-from enum import Enum as UserEnum
+from flask_login import UserMixin
+import enum
 import hashlib
 
 
@@ -14,10 +14,22 @@ class BaseModel(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
 
 
-class UserRole(UserEnum):
+class UserRole(enum.Enum):
     ADMIN = 1
     STUDENT = 2
     USER = 3
+
+
+class Gender(enum.Enum):
+    NO_GENDER = 4
+    MALE = 5
+    FEMALE = 6
+
+
+class SubjectName(enum.Enum):
+    HOUR_TEST = 7
+    MINUTES_15_TEST = 8
+    FINAL_EXAM_MARK=9
 
 
 # Tạo bảng mới theo db.Model
@@ -80,7 +92,7 @@ class Class(BaseModel):
 class Student(BaseModel):
     __tablename__ = 'student'
     name = Column(String(100), nullable=False)  # Tên HS
-    gender = Column(String(5))  # Giới tính HS
+    gender = Column(Enum(Gender), default=Gender.NO_GENDER)  # Giới tính HS
     birthday = Column(DateTime, nullable=False)  # Ngày sinh nhật của HS
     address = Column(String(200))  # Địa chỉ nhà
     contact_1 = Column(Integer, nullable=False)  # Số đt PH
@@ -166,9 +178,6 @@ def get_user_by_id(user_id):
     return User.query.get(user_id)
 
 
-# def get_mark(mark_id):
-#     pass
-
 def check_login(username, password):
     if username and password:
         password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
@@ -182,7 +191,8 @@ def add_user(name, username, password, **kwargs):
                 username=username.strip(),
                 password=password,
                 email=kwargs.get('email'),
-                avatar=kwargs.get('avatar'))
+                avatar=kwargs.get('avatar'),
+                user_role=kwargs.get('user_role'))
     db.session.add(user)
     db.session.commit()
 

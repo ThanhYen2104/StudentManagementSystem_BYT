@@ -3,37 +3,49 @@
 {% block content %}
 <h2 class="text-center" style="color:#2f7e87;">ĐĂNG KÝ</h2>
 
-{% if err_msg %}
+{% if err_msg1 %}
 <div class="alert alert-danger">
-    <h5>{{ err_msg }}</h5>
+    <h5>{{ err_msg1 }}</h5>
 </div>
 {% endif %}
 
 <form action="/register" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label>Họ tên</label>
-        <input style="margin: 7px 0 7px 0;" type="text" class="form-control" name="name" placeholder="Nhập họ và tên" required>
+        <input style="margin: 7px 0 7px 0;" type="text" class="form-control" name="name" placeholder="Nhập họ và tên"
+               required>
     </div>
     <div class="form-group">
         <label>Email</label>
-        <input style="margin: 7px 0 7px 0;" type="email" class="form-control" name="email" placeholder="Nhập địa chỉ email" required>
+        <input style="margin: 7px 0 7px 0;" type="email" class="form-control" name="email"
+               placeholder="Nhập địa chỉ email" required>
     </div>
     <div class="form-group">
         <label>Tên đăng nhập</label>
-        <input style="margin: 7px 0 7px 0;" type="text" class="form-control" name="username" placeholder="Nhập username" required>
+        <input style="margin: 7px 0 7px 0;" type="text" class="form-control" name="username" placeholder="Nhập username"
+               required>
     </div>
     <div class="form-group">
         <label>Mật khẩu</label>
-        <input style="margin: 7px 0 7px 0;" type="password" class="form-control" name="password" placeholder="Nhập password" required>
+        <input style="margin: 7px 0 7px 0;" type="password" class="form-control" name="password"
+               placeholder="Nhập password" required>
     </div>
     <div class="form-group">
         <label>Xác nhận mật khẩu</label>
-        <input style="margin: 7px 0 5px 0;" type="password" class="form-control" name="confirm" placeholder="Nhập password xác nhận" required>
+        <input style="margin: 7px 0 5px 0;" type="password" class="form-control" name="confirm"
+               placeholder="Nhập password xác nhận" required>
     </div>
     <div class="form-group">
         <label>Ảnh đại diện</label>
         <input style="margin: 7px 0 5px 0;" type="file" class="form-control" name="avatar">
     </div>
+
+    <label>Phân quyền user:</label>
+    <select style="margin: 7px 0 5px 0;" name="user_role" class="form-select" aria-label="Phân quyền user:">
+        <option selected value="STUDENT">Học sinh</option>
+        <option value="ADMIN">Administrator</option>
+        <option value="TEACHER">Giáo viên</option>
+    </select>
     <input type="submit" value="Đăng ký" class="btn btn-outline-primary" style="margin-top:10px;">
 </form>
 {% endblock %}

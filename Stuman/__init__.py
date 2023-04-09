@@ -10,6 +10,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:%s@localhost/stuma
                                         % quote('Byt.123456')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
+
 db = SQLAlchemy(app)
 login = LoginManager(app)
 
