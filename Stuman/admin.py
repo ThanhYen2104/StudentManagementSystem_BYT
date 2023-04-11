@@ -2,7 +2,7 @@
 from sqlalchemy import inspect
 from StudentManagementSystem_BYT.Stuman import app, db
 from flask_admin import Admin
-from StudentManagementSystem_BYT.Stuman.models import Grade, Class, Student, StudentSubject, Semester
+from StudentManagementSystem_BYT.Stuman.models import Grade, Class, Student, StudentSubject
 from StudentManagementSystem_BYT.Stuman.models import Subject, MarkColumn, User
 from flask_admin.contrib.sqla import ModelView
 
@@ -63,7 +63,6 @@ class MarkColumnView(ModelView):
 
 
 admin = Admin(app, name="QUẢN TRỊ BYT", template_mode='bootstrap4')
-admin.add_view(ModelView(Semester, db.session, name="Học kì"))
 admin.add_view(GradeView(Grade, db.session, name="Khối"))
 admin.add_view(ClassView(Class, db.session, name="Lớp"))
 admin.add_view(StudentView(Student, db.session, name="Học sinh"))

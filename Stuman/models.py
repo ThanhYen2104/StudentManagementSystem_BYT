@@ -20,13 +20,7 @@ class UserRole(enum.Enum):
     USER = 3
 
 
-class Gender(enum.Enum):
-    NO_GENDER = 4
-    MALE = 5
-    FEMALE = 6
-
-
-class SubjectName(enum.Enum):
+class MarkName(enum.Enum):
     HOUR_TEST = 7
     MINUTES_15_TEST = 8
     FINAL_EXAM_MARK = 9
@@ -46,31 +40,14 @@ class User(BaseModel, UserMixin):
         return self.name
 
 
-# Bảng thông tin năm học
-class Semester(BaseModel):
-    __tablename__ = 'semester'
-    name = Column(String(30), nullable=False)
-    key = Column(String(10), nullable=False)
-    year_start = Column(DateTime, nullable=False)
-    year_end = Column(DateTime, nullable=False)
-    student = relationship('Student', backref='semester', lazy=True)
-    grade = relationship('Grade', backref='semester', lazy=True)
-    classes = relationship('Class', backref='semester', lazy=True)
-    subject = relationship('Subject', backref='semester', lazy=True)
-
-    def __str__(self):
-        return self.name
-
-
 # Bảng thông tin khối lớp học
 class Grade(BaseModel):
     __tablename__ = 'grade'
-    name = Column(String(20), nullable=False)  # Tên lớp
+    name = Column(String(20), nullable=False)  # Tên khối lớp
     value = Column(Integer, nullable=False)  # Chỉ số lớp
-    description = Column(String(100))  # Mô tả thông tin lớp
-    students = relationship('Student', backref='grade', lazy=False)  # Học sinh thuộc lớp
+    description = Column(String(100))  # Mô tả thông tin khối lớp
+    students = relationship('Student', backref='grade', lazy=False)  # Học sinh thuộc khối lớp
     classes = relationship('Class', backref='grade', lazy=False)
-    semester_id = Column(Integer, ForeignKey(Semester.id))
 
     def __str__(self):
         return self.name
@@ -82,7 +59,6 @@ class Class(BaseModel):
     name = Column(String(250), nullable=False)
     student = relationship('Student', backref='class', lazy=True)
     grade_id = Column(Integer, ForeignKey(Grade.id))
-    semester_id = Column(Integer, ForeignKey(Semester.id))
 
     def __str__(self):
         return self.name
@@ -92,8 +68,8 @@ class Class(BaseModel):
 class Student(BaseModel):
     __tablename__ = 'student'
     name = Column(String(100), nullable=False)  # Tên HS
-    gender = Column(Enum(Gender), default=Gender.NO_GENDER)  # Giới tính HS
-    birthday = Column(DateTime, nullable=False)  # Ngày sinh nhật của HS
+    gender = Column(String(10), default="Không có")  # Giới tính HS
+    birthday = Column(String(12))  # Ngày sinh nhật của HS
     address = Column(String(200))  # Địa chỉ nhà
     contact_1 = Column(Integer, nullable=False)  # Số đt PH
     contact_2 = Column(Integer)  # Số đt PH
@@ -102,7 +78,6 @@ class Student(BaseModel):
     created_date = Column(DateTime, default=datetime.now())  # Ngày tạo thông tin học sinh
     grade_id = Column(Integer, ForeignKey(Grade.id))
     classes_id = Column(Integer, ForeignKey(Class.id))
-    semester_id = Column(Integer, ForeignKey(Semester.id))
     user_id = Column(Integer, ForeignKey(User.id))
     student_sub = relationship('StudentSubject', backref='student', lazy=True)
     mark = relationship('MarkColumn', backref='student', lazy=True)
@@ -115,7 +90,6 @@ class Student(BaseModel):
 class Subject(BaseModel):
     __tablename__ = 'subject'
     name = Column(String(250), nullable=False)
-    semester_id = Column(Integer, ForeignKey(Semester.id))
     subject_student = relationship('StudentSubject', backref='subject', lazy=True)
     mark = relationship('MarkColumn', backref='subject', lazy=True)
 
@@ -132,7 +106,7 @@ class StudentSubject(BaseModel):
 
 class MarkColumn(BaseModel):
     __tablename__ = 'mark_column'
-    name = Column(String(50), nullable=False)
+    name = Column(Enum(MarkName), default=MarkName.MINUTES_15_TEST)
     value = Column(Float, nullable=False, default=0.0)
     student_id = Column(Integer, ForeignKey(Student.id))
     subject_id = Column(Integer, ForeignKey(Subject.id))
@@ -174,6 +148,18 @@ def get_class_by_id(class_id):
     return Class.query.get(class_id)
 
 
+def get_markcolumn_by_id(mark_column_id):
+    return MarkColumn.query.get(mark_column_id)
+
+
+def get_markcolumn(student_id=None, subject_id=None):
+    markcolumn = MarkColumn.query
+    if student_id and subject_id:
+        markcolumn.filter(MarkColumn.student_id.__eq__(student_id))
+        markcolumn.filter(MarkColumn.subject_id.__eq__(subject_id))
+    return markcolumn.all()
+
+
 def get_user_by_id(user_id):
     return User.query.get(user_id)
 
@@ -194,6 +180,19 @@ def add_user(name, username, password, **kwargs):
                 avatar=kwargs.get('avatar'),
                 user_role=kwargs.get('user_role'))
     db.session.add(user)
+    db.session.commit()
+
+
+def add_student(name, **kwargs):
+    student = Student(name=name,
+                      gender=kwargs.get('gender'),
+                      birthday=kwargs.get('birthday'),
+                      address=kwargs.get('address'),
+                      contact_1=kwargs.get('contact_1'),
+                      contact_2=kwargs.get('contact_2'),
+                      email=kwargs.get('email'),
+                      image=kwargs.get('image'))
+    db.session.add(student)
     db.session.commit()
 
 

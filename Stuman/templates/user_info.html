@@ -2,6 +2,40 @@
 
 {% block content %}
 <h1 class="text-center" style="color:#2f7e87;">Thông tin học sinh</h1>
+<div class="row">
+    {% if current_user.is_authenticated %}
+    {% for s in students %}
+    {% if current_user.id==s.user_id %}
+    <div class="col-sm-5">
+        <h2 style="color:#2f7e87;">{{ s.name }}</h2>
+        <img style="width:450px; height:auto; border-radius: 15px;" src="{{ s.image }}" alt="{{ s.name }}">
+        <hr class="d-sm-none">
+    </div>
+    <div class="col-sm-7">
+        <h2 style="color:#2f7e87;">Thông tin {{ s.name }}</h2>
+        <div style="padding-left: 20px">
+            {% for g in grade %}
+            {% if g.id and s.grade_id==g.id %}
+            <h6 style="color:#2f7e87;">Khối: {{ g.value }}</h6>
+            {% endif %}
+            {% endfor %}
+            {% for c in classes %}
+            {% if c.id and s.classes_id==c.id %}
+            <h6 style="color:#2f7e87;">Lớp: {{ c.name }}</h6>
+            {% endif %}
+            {% endfor %}
+            <h6 style="color:#2f7e87;">Giới tính: {{ s.gender }}</h6>
+            <h6 style="color:#2f7e87;">Sinh nhật: {{ s.birthday }}</h6>
+            <h6 style="color:#2f7e87;">Email: {{ s.email }}</h6>
+            <h6 style="color:#2f7e87;">Số điện thoại PH: {{ s.contact_1 }}</h6>
+            <h6 style="color:#2f7e87;">Địa chỉ liên hệ: {{ s.address }}</h6>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+</div>
+<br>
 <div class="accordion" id="accordionExample">
     <div class="accordion-item">
         <h2 class="accordion-header" id="headingOne">

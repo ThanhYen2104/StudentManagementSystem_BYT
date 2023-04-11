@@ -42,7 +42,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('Thanh Yến','https://img5.thuthuatphanmem.vn/uploads/2022/01/12/999-hinh-anh-ngau-nhat_095431489.jpg','admin','e10adc3949ba59abbe56e057f20f883e','thanhyen@gmail.com','ADMIN',1),('Thanh Yến','https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg','test','e10adc3949ba59abbe56e057f20f883e','mail@gmail.com','STUDENT',2);
+INSERT INTO `user` VALUES ('Thanh Yến','https://img5.thuthuatphanmem.vn/uploads/2022/01/12/999-hinh-anh-ngau-nhat_095431489.jpg','admin','e10adc3949ba59abbe56e057f20f883e','thanhyen@gmail.com','ADMIN',1),('Thanh Yến','https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg','test','e10adc3949ba59abbe56e057f20f883e','mail@gmail.com','USER',2);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

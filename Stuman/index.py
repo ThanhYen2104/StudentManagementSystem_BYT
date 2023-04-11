@@ -101,22 +101,52 @@ def man_Class(class_id):
     return render_template("classes.html", students=students, classes=classes)
 
 
-@app.route("/subject")
-def man_Subject():
+@app.route("/system")
+def man_System():
     grade_id = request.args.get('grade_id')
     classes = models.get_classes(grade_id=grade_id)
     classes_id = request.args.get('classes_id')
     student_id = request.args.get('student_id')
     kw = request.args.get('kw')
     students = models.get_students(kw=kw, classes_id=classes_id, grade_id=grade_id)
-    return render_template("subject.html", students=students, classes=classes)
+    return render_template("edit_system.html", classes=classes, students=students)
+
+
+@app.route('/new-student', methods=['GET', 'POST'])
+def add_student():
+    err_msg = ""
+    if request.method.__eq__('POST'):
+        name = request.form.get('name')
+        gender = request.form.get('gender')
+        birthday = request.form.get('birthday')
+        address = request.form.get('address')
+        contact_1 = request.form.get('contact_1')
+        contact_2 = request.form.get('contact_2')
+        email = request.form.get('email')
+        image_path = None
+    try:
+        image = request.files.get('image')
+        if image:
+            res = cloudinary.uploader.upload(image)
+            image_path = res['secure_url']
+            models.add_student(name=name, gender=gender,
+                               birthday=birthday, address=address,
+                               contact_1=contact_1, contact_2=contact_2,
+                               email=email, image=image_path)
+        else:
+            err_msg = 'Thông tin đã nhập có vấn đề!'
+    except Exception as ex:
+        err_msg = 'Hệ thống nhận được lỗi ' + str(ex)
+    else:
+        return redirect(url_for('home'))
 
 
 @app.context_processor
 def common_response():
     return {
         'grade': Grade.query.all(),
-        'user': User.query.all()
+        'user': User.query.all(),
+        'subject': Subject.query.all()
     }
 
 
