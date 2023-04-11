@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session
 from StudentManagementSystem_BYT.Stuman import app, models, login
 from StudentManagementSystem_BYT.Stuman.admin import *
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user
 import cloudinary.uploader
 
 
@@ -139,6 +139,45 @@ def add_student():
         err_msg = 'Hệ thống nhận được lỗi ' + str(ex)
     else:
         return redirect(url_for('home'))
+
+
+@app.route('/change_class/<int:student_id>', methods=['GET', 'POST'])
+def change_class(student_id):
+    err_msg = ""
+    if current_user.is_authenticated or current_user.user_role.ADMIN:
+        if request.method.__eq__('POST'):
+            grade_id = request.args.get('grade_id')
+            classes = models.get_classes(grade_id=grade_id)
+            classes_id = request.args.get('classes_id')
+            student_id = request.form.get('student_id')
+            kw = request.args.get('kw')
+            students = models.get_students(kw=kw, classes_id=classes_id, grade_id=grade_id)
+            new_class_id = request.form.get('new_class_id')
+        try:
+            models.change_class_for_student(student_id=new_class_id)
+        except Exception:
+            err_msg = 'Chuyển đổi lớp không thành công!'
+    else:
+        return redirect(url_for('home'))
+    return redirect(url_for('man_Student'))
+
+
+@app.route('/add_marks', methods=['POST'])
+def add_marks():
+    err = ""
+    student_id = request.form['student_id']
+    subject_id = request.form['subject_id']
+    mark_column_name = request.form['name']
+    mark_value = request.form['value']
+    student_subject_id = models.get_markcolumn(student_id=student_id, subject_id=subject_id)
+    try:
+        mark = models.add_mark(student_id=student_id, subject_id=subject_id, mark_column_name=mark_column_name,
+                               mark_value=mark_value)
+        db.session.add(mark)
+        db.session.commit()
+    except Exception:
+        err = "Nhập điểm không thành công!"
+    return redirect(url_for('man_System'))
 
 
 @app.context_processor

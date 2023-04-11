@@ -3,6 +3,11 @@
 {% block content %}
 <h2 class="text-center" style="color:#2f7e87;">Quản lý học sinh</h2>
 <hr>
+{% if err_msg %}
+<div class="alert alert-danger">
+    <h5>{{ err_msg }}</h5>
+</div>
+{% endif %}
 <div>
     {% if students %}
     <div class="row">
@@ -25,8 +30,54 @@
                     <p class="card-text">Lớp: {{ c.name }}</p>
                     {% endif %}
                     {% endfor %}
-                    <!--                    <a href="#" class="btn btn-success">Sửa thông tin</a>-->
-                    <!--                    <a href="#" class="btn btn-danger">Xóa</a>-->
+                    <a href="{{ url_for('change_class', student_id=s.id) }}" method="post"
+                       class="btn btn-outline-success" data-bs-toggle="modal"
+                       data-bs-target="#exampleModal"
+                       data-bs-whatever="@mdo">Đổi lớp</a>
+                    <a href="#" class="btn btn-outline-danger">Xóa</a>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Chuyển lớp</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('change_class', student_id=s.id) }}" method="post"
+                                          enctype="multipart/form-data">
+                                        <div class="mb-3">
+                                            <label class="col-form-label">Lớp học hiện tại:</label>
+
+                                            {% for c in classes %}
+                                            {% if c.id and s.classes_id==c.id %}
+                                            <input style="margin: 7px 0 7px 0;" type="text" class="form-control"
+                                                   name="current_class" value="{{ c.name }}" readonly>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="new_class_id" class="col-form-label">Chuyển đến lớp học:</label>
+                                            <select class="form-select" name="new_class_id" id="new_class_id">
+                                                {% for c in classes %}
+                                                {% if c.id and s.classes_id!=c.id %}
+                                                <option value="{{ c.id }}">{{ c.name }}</option>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <input type="submit" value="Đổi lớp" class="btn btn-outline-success"
+                                               style="margin-top:10px;">
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

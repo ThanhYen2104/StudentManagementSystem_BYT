@@ -153,11 +153,18 @@ def get_markcolumn_by_id(mark_column_id):
 
 
 def get_markcolumn(student_id=None, subject_id=None):
-    markcolumn = MarkColumn.query
-    if student_id and subject_id:
-        markcolumn.filter(MarkColumn.student_id.__eq__(student_id))
-        markcolumn.filter(MarkColumn.subject_id.__eq__(subject_id))
-    return markcolumn.all()
+    markcolumn_subject = MarkColumn.query.filter(Subject.id.__eq__(subject_id))
+    markcolumn_student = MarkColumn.query.filter(Student.id.__eq__(student_id))
+    return markcolumn_student.all() and markcolumn_subject.all()
+
+
+def add_mark(student_id=None, subject_id=None, name=None, value=None):
+    markcolumn = get_markcolumn(student_id == student_id, subject_id == subject_id)
+    mark = MarkColumn(name=name,
+                      value=value.strip(),
+                      markcolumn=markcolumn.id)
+    db.session.add(mark)
+    db.session.commit()
 
 
 def get_user_by_id(user_id):
@@ -193,6 +200,16 @@ def add_student(name, **kwargs):
                       email=kwargs.get('email'),
                       image=kwargs.get('image'))
     db.session.add(student)
+    db.session.commit()
+
+
+def change_class_for_student(student_id=None, new_class_id=None):
+    if student_id is None:
+        raise ValueError('Mã học sinh không hợp lệ!')
+    if new_class_id is None:
+        raise ValueError('Mã lớp học mới không hợp lệ!')
+    student = Student.query.filter(Student.classes_id.__eq__(student_id)).first()
+    student.classes_id = new_class_id
     db.session.commit()
 
 
